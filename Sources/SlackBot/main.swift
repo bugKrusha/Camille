@@ -1,12 +1,15 @@
 import Chameleon
 
 let store = Environment()
+let storage = RedisStorage(url: try store.get(forKey: "STORAGE_URL"))
 
 let authenticator = OAuthAuthenticator(
     network: NetworkProvider(),
+    storage: storage,
     clientId: try store.get(forKey: "CLIENT_ID"),
     clientSecret: try store.get(forKey: "CLIENT_SECRET"),
-    scopes: [.channels_write, .chat_write_bot, .users_read]
+    scopes: [.channels_write, .chat_write_bot, .users_read],
+    redirectUri: try? store.get(forKey: "REDIRECT_URI")
 )
 
 let bot = SlackBot(
@@ -19,12 +22,7 @@ bot.on(message.self) { bot, data in
 
     guard msg.text.patternMatches(against: ["hello"]) else { return }
 
-    let response = try msg
-        .respond()
-        .text(["hey!"])
-        .makeChatMessage()
-
-    try bot.send(response)
+    try bot.send(["hey!"], to: msg.target())
 }
 
 bot.start()
