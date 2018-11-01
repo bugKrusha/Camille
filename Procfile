@@ -1,1 +1,1 @@
-web: camille-ios-folks --env=production --port=$PORT
+web: Slackbot --env=production --port=$PORT
