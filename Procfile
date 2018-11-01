@@ -1,1 +1,1 @@
-web: Slackbot --env=production --port=$PORT
+web: SlackBot --env=production --port=$PORT
