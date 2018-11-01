@@ -1,1 +1,1 @@
-web: ios-folks-camille --env=production --port=$PORT
+web: camille-ios-folks --env=production --port=$PORT
