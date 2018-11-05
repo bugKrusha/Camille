@@ -1,4 +1,5 @@
 import Chameleon
+import SlackBotKit
 
 let store = Environment()
 let storage = RedisStorage(url: try store.get(forKey: "STORAGE_URL"))

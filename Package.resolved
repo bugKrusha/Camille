@@ -20,20 +20,11 @@
         }
       },
       {
-        "package": "CTLS",
-        "repositoryURL": "https://github.com/vapor/ctls.git",
-        "state": {
-          "branch": null,
-          "revision": "fddec6a4643d6e85b6bb6dc54b1b5cdbabd395d2",
-          "version": "1.1.2"
-        }
-      },
-      {
         "package": "Chameleon",
-        "repositoryURL": "https://github.com/ChameleonBot/ChameleonMono.git",
+        "repositoryURL": "https://github.com/ChameleonBot/Chameleon.git",
         "state": {
           "branch": null,
-          "revision": "9b5b686cd244482558b85a967d7a0b6722d25e25",
+          "revision": "14dd96bd8edf87c2949868d9840278f55082ce1c",
           "version": "0.0.1"
         }
       },
@@ -62,6 +53,15 @@
           "branch": null,
           "revision": "bf4470b9da79024aab79c85de80374f6c29e3864",
           "version": "2.1.1"
+        }
+      },
+      {
+        "package": "CTLS",
+        "repositoryURL": "https://github.com/vapor/ctls.git",
+        "state": {
+          "branch": null,
+          "revision": "fddec6a4643d6e85b6bb6dc54b1b5cdbabd395d2",
+          "version": "1.1.2"
         }
       },
       {
@@ -159,8 +159,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "63768e7f56e58dbfa4288e16ad2e4003bfd8dcde",
-          "version": "2.4.0"
+          "revision": "b4fcd10d565ed32ecdf8ecae98487fc6ced73254",
+          "version": "2.4.5"
         }
       }
     ]
