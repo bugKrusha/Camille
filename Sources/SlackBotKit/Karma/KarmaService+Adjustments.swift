@@ -57,13 +57,14 @@ extension KarmaService {
             let newTotal = data.current + data.change
             storage.set(value: newTotal, forKey: user.id, in: Keys.namespace)
 
-            let comment = (data.change > 0
+            let commentFormatter = (data.change > 0
                 ? config.positiveComments.randomElement
                 : config.negativeComments.randomElement
-            ) ?? ""
+              ) ?? { "\($0): \($1)" }
+            let comment = commentFormatter(user.messageSegment, newTotal)
 
             response
-                .text([user, comment, newTotal])
+                .text([comment])
                 .newLine()
         }
         
