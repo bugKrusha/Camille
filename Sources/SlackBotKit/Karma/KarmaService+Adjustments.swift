@@ -60,7 +60,7 @@ extension KarmaService {
             let commentFormatter = (data.change > 0
                 ? config.positiveComments.randomElement
                 : config.negativeComments.randomElement
-              ) ?? { "\($0): \($1)" }
+            ) ?? { "\($0): \($1)" }
             let comment = commentFormatter(user.messageSegment, newTotal)
 
             response
