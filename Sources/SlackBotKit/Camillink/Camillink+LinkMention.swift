@@ -17,7 +17,8 @@ extension CamillinkService {
     }
     
     func previousLinkDiscussion(linkURL: URL) throws -> Record? {
-        let string = try storage.get(key: linkURL.absoluteString, from: Keys.namespace, or: "INVALID")
+        let string = try storage.get(key: linkURL.absoluteString, from: Keys.namespace, or: "")
+        guard !string.isEmpty else { return nil }
         guard let data = string.data(using: .utf8) else { return nil }
         let record = try JSONDecoder().decode(Record.self, from: data)
         guard !isRecordExpired(record: record) else {
@@ -59,7 +60,10 @@ extension CamillinkService {
     
     func shouldSilenceForCrossLink(message: MessageDecorator, record: Record) -> Bool {
         guard config.silentCrossLink else { return false }
-        return message.mentionedChannels.map({ $0.value.id }).contains(record.channelID)
+        let ids = message.mentionedChannels.map({ $0.value.id })
+        .compactMap({ $0.split(separator: "|").first })
+            .map({ String($0) })
+        return ids.contains(record.channelID)
     }
     
     func shouldSilenceForSameChannel(message: MessageDecorator, record: Record) -> Bool {
