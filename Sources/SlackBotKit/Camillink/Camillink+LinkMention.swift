@@ -17,10 +17,11 @@ extension CamillinkService {
     }
     
     func previousLinkDiscussion(linkURL: URL) throws -> Record? {
-        let string = try storage.get(key: linkURL.absoluteString, from: Keys.namespace, or: "")
-        guard !string.isEmpty else { return nil }
-        guard let data = string.data(using: .utf8) else { return nil }
-        let record = try JSONDecoder().decode(Record.self, from: data)
+        let recordString = try storage.get(key: linkURL.absoluteString, from: Keys.namespace, or: "")
+        guard !recordString.isEmpty, let recordData = recordString.data(using: .utf8) else { return nil }
+        
+        let record = try JSONDecoder().decode(Record.self, from: recordData)
+
         guard !isRecordExpired(record: record) else {
             storage.remove(key: linkURL.absoluteString, from: Keys.namespace)
             return nil
@@ -54,14 +55,16 @@ extension CamillinkService {
             shouldSilenceForSameChannel(message: message, record: record)
     }
     
-    func shouldSilenceForWhitelisting(record: Record) throws -> Bool {
+    func shouldSilenceForWhitelisting(record: Record) -> Bool {
         return false
     }
     
     func shouldSilenceForCrossLink(message: MessageDecorator, record: Record) -> Bool {
         guard config.silentCrossLink else { return false }
-        let ids = message.mentionedChannels.map({ $0.value.id })
-        .compactMap({ $0.split(separator: "|").first })
+        let ids = message
+            .mentionedChannels
+            .map({ $0.value.id })
+            .compactMap({ $0.split(separator: "|").first })
             .map({ String($0) })
         return ids.contains(record.channelID)
     }
