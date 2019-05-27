@@ -8,32 +8,23 @@ extension CamillinkService {
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
         // Might be good to clean attribution links to prevent duplicates, etc...
         guard let linkURL = URL(string: linkString) else { return }
-        guard try !isLinkWhitelisted(link: linkURL) else { return }
         if let previous = try previousLinkDiscussion(linkURL: linkURL) {
+            guard try !shouldSilence(message: message, record: previous) else { return }
             try sendPrompt(bot: bot, message: message, linkURL: linkURL, previousLink: previous.permalink)
         } else {
             try markPreviousDiscussion(bot: bot, message: message, linkURL: linkURL)
         }
-
     }
     
     func previousLinkDiscussion(linkURL: URL) throws -> Record? {
         let string = try storage.get(key: linkURL.absoluteString, from: Keys.namespace, or: "INVALID")
         guard let data = string.data(using: .utf8) else { return nil }
         let record = try JSONDecoder().decode(Record.self, from: data)
-        if let dayLimit = config.recencyLimitInDays {
-            // Dave please don't yell at me
-            guard let daysSince = Calendar.current.dateComponents([.day], from: record.date, to: Date()).day else { return nil }
-            if dayLimit > daysSince {
-                return record
-            } else {
-                // Past limit, remove it
-                storage.remove(key: linkURL.absoluteString, from: Keys.namespace)
-                return nil
-            }
-        } else {
-            return record
+        guard !isRecordExpired(record: record) else {
+            storage.remove(key: linkURL.absoluteString, from: Keys.namespace)
+            return nil
         }
+        return record
     }
     
     func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousLink: URL) throws {
@@ -56,8 +47,31 @@ extension CamillinkService {
         storage.set(value: string, forKey: linkURL.absoluteString, in: Keys.namespace)
     }
     
-    func isLinkWhitelisted(link: URL) throws -> Bool {
+    func shouldSilence(message: MessageDecorator, record: Record) throws -> Bool {
+        return try shouldSilenceForWhitelisting(record: record) ||
+            shouldSilenceForCrossLink(message: message, record: record) ||
+            shouldSilenceForSameChannel(message: message, record: record)
+    }
+    
+    func shouldSilenceForWhitelisting(record: Record) throws -> Bool {
         return false
+    }
+    
+    func shouldSilenceForCrossLink(message: MessageDecorator, record: Record) -> Bool {
+        guard config.silentCrossLink else { return false }
+        return message.mentionedChannels.map({ $0.value.id }).contains(record.channelID)
+    }
+    
+    func shouldSilenceForSameChannel(message: MessageDecorator, record: Record) -> Bool {
+        guard config.silentSameChannel else { return false }
+        return message.message.channel?.id == record.channelID
+    }
+    
+    func isRecordExpired(record: Record) -> Bool {
+        guard let dayLimit = config.recencyLimitInDays else { return false }
+        // Dave please don't yell at me
+        guard let daysSince = Calendar.current.dateComponents([.day], from: record.date, to: Date()).day else { return true }
+        return dayLimit < daysSince
     }
 
 }
