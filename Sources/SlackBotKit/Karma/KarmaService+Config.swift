@@ -32,7 +32,6 @@ extension KarmaService {
 }
 
 private extension KarmaService.Config {
-
     /// Non-localized pluralization.
     ///
     /// - Parameter score: a point score.
@@ -41,5 +40,4 @@ private extension KarmaService.Config {
     static func pluralizedScoreString(from score: Int) -> String {
         return score == 1 ? "point" : "points"
     }
-
 }
