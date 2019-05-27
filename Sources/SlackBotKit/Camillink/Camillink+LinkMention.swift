@@ -50,12 +50,15 @@ extension CamillinkService {
     }
 
     func shouldSilence(message: MessageDecorator, record: Record) throws -> Bool {
-        return try shouldSilenceForWhitelisting(record: record) ||
+        return shouldSilenceForWhitelisting(record: record) ||
             shouldSilenceForCrossLink(message: message, record: record) ||
             shouldSilenceForSameChannel(message: message, record: record)
     }
 
     func shouldSilenceForWhitelisting(record: Record) -> Bool {
+        // Eventually implement whitelisting here
+        // This is WIP until I get time to implement attachments
+        // in Chameleon
         return false
     }
 
