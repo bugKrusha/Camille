@@ -1,9 +1,9 @@
 import Chameleon
 
 extension CamillinkService {
-    
+
     enum Patterns: PatternRepresentable {
-        
+
         case http
 
         var pattern: [Matcher] {
@@ -15,3 +15,4 @@ extension CamillinkService {
         var strict: Bool { return false }
     }
 }
+

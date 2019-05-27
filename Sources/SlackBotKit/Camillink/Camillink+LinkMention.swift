@@ -2,7 +2,7 @@ import Chameleon
 import Foundation
 
 extension CamillinkService {
-    
+
     func trackLink(bot: SlackBot, message: MessageDecorator) throws {
         guard !message.isIM else { return }
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
@@ -15,11 +15,11 @@ extension CamillinkService {
             try markPreviousDiscussion(bot: bot, message: message, linkURL: linkURL)
         }
     }
-    
+
     func previousLinkDiscussion(linkURL: URL) throws -> Record? {
         let recordString = try storage.get(key: linkURL.absoluteString, from: Keys.namespace, or: "")
         guard !recordString.isEmpty, let recordData = recordString.data(using: .utf8) else { return nil }
-        
+
         let record = try JSONDecoder().decode(Record.self, from: recordData)
 
         guard !isRecordExpired(record: record) else {
@@ -28,7 +28,7 @@ extension CamillinkService {
         }
         return record
     }
-    
+
     func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousLink: URL) throws {
         let response = try message.respond()
         let comment = "👋 \(linkURL.absoluteString) is already being discussed here: \(previousLink.absoluteString)"
@@ -37,7 +37,7 @@ extension CamillinkService {
             .newLine()
         try bot.send(response.makeChatMessage())
     }
-    
+
     func markPreviousDiscussion(bot: SlackBot, message: MessageDecorator, linkURL: URL) throws {
         guard let channel = message.message.channel else { return }
         let permalink = try bot.permalink(message.message)
@@ -48,17 +48,17 @@ extension CamillinkService {
         guard let string = String(data: data, encoding: .utf8) else { return }
         storage.set(value: string, forKey: linkURL.absoluteString, in: Keys.namespace)
     }
-    
+
     func shouldSilence(message: MessageDecorator, record: Record) throws -> Bool {
         return try shouldSilenceForWhitelisting(record: record) ||
             shouldSilenceForCrossLink(message: message, record: record) ||
             shouldSilenceForSameChannel(message: message, record: record)
     }
-    
+
     func shouldSilenceForWhitelisting(record: Record) -> Bool {
         return false
     }
-    
+
     func shouldSilenceForCrossLink(message: MessageDecorator, record: Record) -> Bool {
         guard config.silentCrossLink else { return false }
         let ids = message
@@ -68,12 +68,12 @@ extension CamillinkService {
             .map({ String($0) })
         return ids.contains(record.channelID)
     }
-    
+
     func shouldSilenceForSameChannel(message: MessageDecorator, record: Record) -> Bool {
         guard config.silentSameChannel else { return false }
         return message.message.channel?.id == record.channelID
     }
-    
+
     func isRecordExpired(record: Record) -> Bool {
         guard let dayLimit = config.recencyLimitInDays else { return false }
         // Dave please don't yell at me
@@ -82,3 +82,4 @@ extension CamillinkService {
     }
 
 }
+
