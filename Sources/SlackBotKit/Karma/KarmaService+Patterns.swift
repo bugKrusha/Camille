@@ -12,7 +12,7 @@ extension KarmaService {
         }
         var description: String {
             switch self {
-            case .topUsers: return "Find out who's on top!"
+            case .topUsers: return "Find out who’s on top!"
             case .myCount: return "See how much karma you have"
             case .userCount: return "See how much karma someone else has"
             case .adjustment: return "Give or take karma from someone"

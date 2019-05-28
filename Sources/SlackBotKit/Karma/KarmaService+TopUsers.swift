@@ -30,7 +30,7 @@ extension KarmaService {
         }
 
         let prefix: String
-        if count > config.topUserLimit { prefix = "Yeah, that's too many. Here's the top" }
+        if count > config.topUserLimit { prefix = "Yeah, that’s too many. Here’s the top" }
         else if leaderboard.count < count { prefix = "We only have" }
         else { prefix = "Top" }
 

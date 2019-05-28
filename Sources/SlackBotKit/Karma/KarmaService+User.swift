@@ -9,7 +9,7 @@ extension KarmaService {
         let response = try message
             .respond()
             .text(count == 0
-                ? ["It doesn't look like", user, "has any karma yet"]
+                ? ["It doesn’t look like", user, "has any karma yet"]
                 : [user, "has", count, "karma"]
             )
 
@@ -22,7 +22,7 @@ extension KarmaService {
         let response = try message
             .respond()
             .text(count == 0
-                ? ["It doesn't look like you have any karma yet"]
+                ? ["It doesn’t look like you have any karma yet"]
                 : ["You have", count, "karma"]
         )
 
