@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "SlackBotKit", targets: ["SlackBotKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ChameleonBot/Chameleon.git", .upToNextMinor(from: "0.0.0")),
+        .package(url: "https://github.com/ChameleonBot/Chameleon.git", .upToNextMinor(from: "0.0.2")),
     ],
     targets: [
         .target(name: "SlackBot", dependencies: ["SlackBotKit"]),
