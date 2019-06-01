@@ -5,7 +5,8 @@ extension CamillinkService {
 
     func trackLink(bot: SlackBot, message: MessageDecorator) throws {
         guard !message.isIM else { return }
-        guard message.message.subtype != .message_changed else { return } // 
+         // Unfurled links (the preview slack shows) get tagged with this attribute. Ignore them to avoid double posts.
+        guard message.message.subtype != .message_changed else { return }
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
         // Might be good to clean attribution links to prevent duplicates, etc...
         guard let linkURL = URL(string: linkString) else { return }
