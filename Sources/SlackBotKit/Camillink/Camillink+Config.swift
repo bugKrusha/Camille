@@ -25,7 +25,7 @@ extension CamillinkService {
             return Config(
                 recencyLimitInDays: nil,
                 silentCrossLink: true,
-                silentSameChannel: true
+                silentSameChannel: false
             )
         }
     }
