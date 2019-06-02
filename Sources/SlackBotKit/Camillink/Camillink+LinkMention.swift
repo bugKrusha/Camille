@@ -6,6 +6,7 @@ extension CamillinkService {
     func trackLink(bot: SlackBot, message: MessageDecorator) throws {
         guard !message.isIM else { return }
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
+        guard linkString.hasPrefix("http") else { return } // Check actual link, make sure it's not mail.app etc
         // Might be good to clean attribution links to prevent duplicates, etc...
         guard let linkURL = URL(string: linkString) else { return }
         if let previous = try previousLinkDiscussion(linkURL: linkURL) {
