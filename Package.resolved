@@ -21,11 +21,11 @@
       },
       {
         "package": "Chameleon",
-        "repositoryURL": "https://github.com/maxgoedjen/Chameleon.git",
+        "repositoryURL": "https://github.com/ChameleonBot/Chameleon.git",
         "state": {
-          "branch": "maxg.permalink",
-          "revision": "ef22798d9815e357326e0de57275cf64f2332921",
-          "version": null
+          "branch": null,
+          "revision": "8c99e75a444b16eb3d1c6c7705f34e66fd66f746",
+          "version": "0.0.2"
         }
       },
       {
