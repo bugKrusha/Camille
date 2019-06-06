@@ -14,7 +14,7 @@ extension CamillinkService {
         guard let linkURL = URL(string: linkString) else { return }
         if let previous = try previousLinkDiscussion(linkURL: linkURL) {
             guard try !shouldSilence(message: message, record: previous) else { return }
-            try sendPrompt(bot: bot, message: message, linkURL: linkURL, previousLink: previous.permalink)
+            try sendPrompt(bot: bot, message: message, linkURL: linkURL, previousMessagePermalink: previous.permalink)
         } else {
             try markPreviousDiscussion(bot: bot, message: message, linkURL: linkURL)
         }
@@ -33,27 +33,27 @@ extension CamillinkService {
         return record
     }
 
-    func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousLink: URL) throws {
+    func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousMessagePermalink: URL) throws {
         let response = try message.respond(.threaded)
 
-        let linkURLString = linkURL.absoluteString
-
-        // From the unfurling docs: "There is one notable exception to these rules: we never unfurl
-        // links where the label is a complete substring of your URL minus the protocol."
-        //
-        // It'll prevent some but not all unfurls, it's possible attachments could be used to be more granular
-        let linkURLStringWithoutScheme = linkURL
-            .scheme
-            .map { $0 + "://" }
-            .map { string in
-                linkURLString.remove(prefix: string, includeWhitespace: true)
-            } ?? linkURLString
-
-        let comment = "👋 <\(linkURLString)|\(linkURLStringWithoutScheme)> is already being discussed <\(previousLink.absoluteString)|here>"
         response
-            .text([comment])
+            .text([comment(linkURL: linkURL, previousMessagePermalink: previousMessagePermalink)])
             .newLine()
         try bot.send(response.makeChatMessage())
+    }
+
+    func comment(linkURL: URL, previousMessagePermalink: URL) -> String {
+        let linkURLString = linkURL.absoluteString
+
+        var comment = "👋 That <\(linkURLString)|link> is already being discussed <\(previousMessagePermalink.absoluteString)|here>"
+
+        // Add channel mention
+        let pathComponents = previousMessagePermalink.pathComponents
+        if let channel = pathComponents.last(where: { $0.starts(with: "C") && $0.count == 9 }) {
+            comment += " in <#\(channel)>"
+        }
+
+        return comment
     }
 
     func markPreviousDiscussion(bot: SlackBot, message: MessageDecorator, linkURL: URL) throws {
