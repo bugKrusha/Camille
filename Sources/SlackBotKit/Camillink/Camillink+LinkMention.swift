@@ -33,12 +33,12 @@ extension CamillinkService {
     }
 
     func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousLink: URL) throws {
-        let response = try message.respond()
-        let comment = "👋 \(linkURL.absoluteString) is already being discussed here: \(previousLink.absoluteString)"
+        let response = try message.respond(.threaded)
+        let comment = "👋 \(linkURL.absoluteString) is already being discussed <\(previousLink.absoluteString)|here>"
         response
             .text([comment])
             .newLine()
-        try bot.send(response.makeChatMessage())
+        try bot.send(response.makePreviousDiscussionChatMessage())
     }
 
     func markPreviousDiscussion(bot: SlackBot, message: MessageDecorator, linkURL: URL) throws {
@@ -89,3 +89,26 @@ extension CamillinkService {
 
 }
 
+private extension ChatMessageDecorator {
+
+    func makePreviousDiscussionChatMessage() throws -> ChatMessage {
+        let source = try makeChatMessage()
+
+        return ChatMessage(
+            response_url: source.response_url,
+            channel: source.channel,
+            text: source.text,
+            parse: source.parse,
+            link_names: source.link_names,
+            unfurl_links: false,
+            unfurl_media: false,
+            username: source.username,
+            as_user: source.as_user,
+            icon_url: source.icon_url,
+            icon_emoji: source.icon_emoji,
+            thread_ts: source.thread_ts,
+            reply_broadcast: source.reply_broadcast,
+            attachments: source.attachments
+        )
+    }
+}
