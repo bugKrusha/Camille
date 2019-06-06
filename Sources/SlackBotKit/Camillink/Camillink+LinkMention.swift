@@ -7,6 +7,7 @@ extension CamillinkService {
         guard !message.isIM else { return }
          // Unfurled links (the preview slack shows) get tagged with this attribute. Ignore them to avoid double posts.
         guard message.message.subtype != .message_changed else { return }
+        guard message.message.subtype != .reply_broadcast else { return }
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
         guard linkString.hasPrefix("http") else { return } // Check actual link, make sure it's not mail.app etc
         // Might be good to clean attribution links to prevent duplicates, etc...
@@ -34,11 +35,25 @@ extension CamillinkService {
 
     func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousLink: URL) throws {
         let response = try message.respond(.threaded)
-        let comment = "👋 \(linkURL.absoluteString) is already being discussed <\(previousLink.absoluteString)|here>"
+
+        let linkURLString = linkURL.absoluteString
+
+        // From the unfurling docs: "There is one notable exception to these rules: we never unfurl
+        // links where the label is a complete substring of your URL minus the protocol."
+        //
+        // It'll prevent some but not all unfurls, it's possible attachments could be used to be more granular
+        let linkURLStringWithoutScheme = linkURL
+            .scheme
+            .map { $0 + "://" }
+            .map { string in
+                linkURLString.remove(prefix: string, includeWhitespace: true)
+            } ?? linkURLString
+
+        let comment = "👋 <\(linkURLString)|\(linkURLStringWithoutScheme)> is already being discussed <\(previousLink.absoluteString)|here>"
         response
             .text([comment])
             .newLine()
-        try bot.send(response.makePreviousDiscussionChatMessage())
+        try bot.send(response.makeChatMessage())
     }
 
     func markPreviousDiscussion(bot: SlackBot, message: MessageDecorator, linkURL: URL) throws {
@@ -87,28 +102,4 @@ extension CamillinkService {
         return dayLimit < daysSince
     }
 
-}
-
-private extension ChatMessageDecorator {
-
-    func makePreviousDiscussionChatMessage() throws -> ChatMessage {
-        let source = try makeChatMessage()
-
-        return ChatMessage(
-            response_url: source.response_url,
-            channel: source.channel,
-            text: source.text,
-            parse: source.parse,
-            link_names: source.link_names,
-            unfurl_links: false,
-            unfurl_media: false,
-            username: source.username,
-            as_user: source.as_user,
-            icon_url: source.icon_url,
-            icon_emoji: source.icon_emoji,
-            thread_ts: source.thread_ts,
-            reply_broadcast: source.reply_broadcast,
-            attachments: source.attachments
-        )
-    }
 }
