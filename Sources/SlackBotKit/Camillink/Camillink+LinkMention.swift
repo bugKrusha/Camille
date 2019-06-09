@@ -37,17 +37,18 @@ extension CamillinkService {
         let response = try message.respond(.threaded)
 
         response
-            .text([comment(linkURL: linkURL, previousMessagePermalink: previousMessagePermalink)])
+            .text([previousConversationComment(for: linkURL, at: previousMessagePermalink)])
             .newLine()
         try bot.send(response.makeChatMessage())
     }
 
-    func comment(linkURL: URL, previousMessagePermalink: URL) -> String {
+    func previousConversationComment(for linkURL: URL, at previousMessagePermalink: URL) -> String {
         let linkURLString = linkURL.absoluteString
 
-        var comment = "👋 That <\(linkURLString)|link> is already being discussed <\(previousMessagePermalink.absoluteString)|here>"
+        var comment = "👋 That <\(linkURLString)|link> is already being discussed at <\(previousMessagePermalink.absoluteString)|this message>"
 
-        // Add channel mention
+        // Add channel mention, if we update the storage model we should add the channel as a property
+        // instead of relying on parsing the permalink parsing
         let pathComponents = previousMessagePermalink.pathComponents
         if let channel = pathComponents.last(where: { $0.starts(with: "C") && $0.count == 9 }) {
             comment += " in <#\(channel)>"
