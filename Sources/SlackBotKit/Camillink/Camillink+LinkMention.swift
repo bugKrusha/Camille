@@ -7,14 +7,13 @@ extension CamillinkService {
         guard !message.isIM else { return }
          // Unfurled links (the preview slack shows) get tagged with this attribute. Ignore them to avoid double posts.
         guard message.message.subtype != .message_changed else { return }
-        guard message.message.subtype != .reply_broadcast else { return }
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
         guard linkString.hasPrefix("http") else { return } // Check actual link, make sure it's not mail.app etc
         // Might be good to clean attribution links to prevent duplicates, etc...
         guard let linkURL = URL(string: linkString) else { return }
         if let previous = try previousLinkDiscussion(linkURL: linkURL) {
             guard try !shouldSilence(message: message, record: previous) else { return }
-            try sendPrompt(bot: bot, message: message, linkURL: linkURL, previousMessagePermalink: previous.permalink)
+            try sendPrompt(bot: bot, message: message, currentLinkURL: linkURL, record: previous)
         } else {
             try markPreviousDiscussion(bot: bot, message: message, linkURL: linkURL)
         }
@@ -33,28 +32,15 @@ extension CamillinkService {
         return record
     }
 
-    func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousMessagePermalink: URL) throws {
+    func sendPrompt(bot: SlackBot, message: MessageDecorator, currentLinkURL: URL, record: Record) throws {
         let response = try message.respond(.threaded)
 
+        let comment = "👋 That <\(currentLinkURL.absoluteString)|link> is already being discussed in <\(record.permalink.absoluteString)|this message> in <#\(record.channelID)>"
+
         response
-            .text([previousConversationComment(for: linkURL, at: previousMessagePermalink)])
+            .text([comment])
             .newLine()
         try bot.send(response.makeChatMessage())
-    }
-
-    func previousConversationComment(for linkURL: URL, at previousMessagePermalink: URL) -> String {
-        let linkURLString = linkURL.absoluteString
-
-        var comment = "👋 That <\(linkURLString)|link> is already being discussed at <\(previousMessagePermalink.absoluteString)|this message>"
-
-        // Add channel mention, if we update the storage model we should add the channel as a property
-        // instead of relying on parsing the permalink parsing
-        let pathComponents = previousMessagePermalink.pathComponents
-        if let channel = pathComponents.last(where: { $0.starts(with: "C") && $0.count == 9 }) {
-            comment += " in <#\(channel)>"
-        }
-
-        return comment
     }
 
     func markPreviousDiscussion(bot: SlackBot, message: MessageDecorator, linkURL: URL) throws {
