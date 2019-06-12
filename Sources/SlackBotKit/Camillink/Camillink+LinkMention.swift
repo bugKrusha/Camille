@@ -13,7 +13,7 @@ extension CamillinkService {
         guard let linkURL = URL(string: linkString) else { return }
         if let previous = try previousLinkDiscussion(linkURL: linkURL) {
             guard try !shouldSilence(message: message, record: previous) else { return }
-            try sendPrompt(bot: bot, message: message, linkURL: linkURL, previousLink: previous.permalink)
+            try sendPrompt(bot: bot, message: message, currentLinkURL: linkURL, record: previous)
         } else {
             try markPreviousDiscussion(bot: bot, message: message, linkURL: linkURL)
         }
@@ -32,9 +32,10 @@ extension CamillinkService {
         return record
     }
 
-    func sendPrompt(bot: SlackBot, message: MessageDecorator, linkURL: URL, previousLink: URL) throws {
-        let response = try message.respond()
-        let comment = "👋 \(linkURL.absoluteString) is already being discussed here: \(previousLink.absoluteString)"
+    func sendPrompt(bot: SlackBot, message: MessageDecorator, currentLinkURL: URL, record: Record) throws {
+        let response = try message.respond(.threaded)
+        let comment = "👋 That <\(currentLinkURL.absoluteString)|link> is already being discussed in "
+            + "<\(record.permalink.absoluteString)|this message> in <#\(record.channelID)>"
         response
             .text([comment])
             .newLine()
