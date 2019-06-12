@@ -34,7 +34,8 @@ extension CamillinkService {
 
     func sendPrompt(bot: SlackBot, message: MessageDecorator, currentLinkURL: URL, record: Record) throws {
         let response = try message.respond(.threaded)
-        let comment = "👋 That <\(currentLinkURL.absoluteString)|link> is already being discussed in <\(record.permalink.absoluteString)|this message> in <#\(record.channelID)>"
+        let comment = "👋 That <\(currentLinkURL.absoluteString)|link> is already being discussed in "
+            + "<\(record.permalink.absoluteString)|this message> in <#\(record.channelID)>"
         response
             .text([comment])
             .newLine()
