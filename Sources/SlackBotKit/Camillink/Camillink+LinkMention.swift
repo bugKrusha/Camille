@@ -4,9 +4,9 @@ import Foundation
 extension CamillinkService {
 
     func trackLink(bot: SlackBot, message: MessageDecorator) throws {
+        // thread_broadcast event for the main channel will be marked hidden, ignore to avoid double posts
+        guard !(message.message.subtype == .thread_broadcast && message.message.hidden) else { return }
         guard !message.isIM else { return }
-         // Unfurled links (the preview slack shows) get tagged with this attribute. Ignore them to avoid double posts.
-        guard message.message.subtype != .message_changed else { return }
         guard let linkString = message.mentionedLinks.first.value?.value.link else { return }
         guard linkString.hasPrefix("http") else { return } // Check actual link, make sure it's not mail.app etc
         // Might be good to clean attribution links to prevent duplicates, etc...
