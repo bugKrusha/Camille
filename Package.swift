@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "SlackBotKit", targets: ["SlackBotKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/allenhumphreys/Chameleon.git", .branch("ah/add-subtype")),
+        .package(url: "https://github.com/ChameleonBot/Chameleon.git", .upToNextMinor(from: "0.0.3")),
     ],
     targets: [
         .target(name: "SlackBot", dependencies: ["SlackBotKit"]),

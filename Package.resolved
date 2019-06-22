@@ -21,11 +21,11 @@
       },
       {
         "package": "Chameleon",
-        "repositoryURL": "/Users/allen.humphreys/personal_projects/Chameleon",
+        "repositoryURL": "https://github.com/ChameleonBot/Chameleon.git",
         "state": {
-          "branch": "ah/add-subtype",
-          "revision": "be4fd00567c0bf71665226592799cbdb9128e62d",
-          "version": null
+          "branch": null,
+          "revision": "cae36adafd9353f8ce781a0ec4d8ba177370ab61",
+          "version": "0.0.3"
         }
       },
       {
