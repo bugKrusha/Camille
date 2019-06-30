@@ -4,6 +4,7 @@ public final class KarmaService: SlackBotMessageService {
     // MARK: - Properties
     let storage: Storage
     let config: Config
+    public let allowedSubTypes: [Message.Subtype] = [.me_message, .message_changed, .thread_broadcast]
 
     enum Keys {
         static let namespace = "Karma"
@@ -28,6 +29,9 @@ public final class KarmaService: SlackBotMessageService {
             .registerHelp(item: Patterns.adjustment)
     }
     public func onMessage(slackBot: SlackBot, message: MessageDecorator, previous: MessageDecorator?) throws {
+        // thread_broadcast event for the main channel will be marked hidden, ignore to avoid double adjustments
+        guard !(message.message.subtype == .thread_broadcast && message.message.hidden) else { return }
+
         try slackBot
             .route(message, matching: Patterns.topUsers, to: topUsers)
             .route(message, matching: Patterns.myCount, to: senderCount)

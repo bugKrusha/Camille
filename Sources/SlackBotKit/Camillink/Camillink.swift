@@ -4,6 +4,7 @@ public final class CamillinkService: SlackBotMessageService {
     // MARK: - Properties
     let storage: Storage
     let config: Config
+    public let allowedSubTypes: [Message.Subtype] = [.me_message, .thread_broadcast]
 
     enum Keys {
         static let namespace = "Camillink"
