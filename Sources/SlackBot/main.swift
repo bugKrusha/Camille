@@ -15,7 +15,11 @@ let authenticator = OAuthAuthenticator(
 
 let bot = SlackBot(
     authenticator: authenticator,
-    services: [KarmaService(storage: storage), CamillinkService(storage: storage)]
+    services: [
+        KarmaService(storage: storage),
+        CamillinkService(storage: storage),
+        AutoModeratorService()
+    ]
 )
 
 bot.on(message.self) { bot, data in
