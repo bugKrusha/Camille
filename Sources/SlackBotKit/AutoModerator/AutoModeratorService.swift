@@ -10,11 +10,7 @@ public final class AutoModeratorService: SlackBotMessageService {
         guard !(message.message.subtype == .thread_broadcast && message.message.hidden) else { return }
 
         if let messageText = message.message.text?.lowercased(), let trigger = containsTriggerPhrase(messageText) {
-            do {
                 try sendThreadedResponse(from: slackBot, to: message, with: trigger)
-            } catch let error {
-                print("Error sending AutoModerator response: \(error)")
-            }
         }
     }
 
@@ -33,10 +29,8 @@ public final class AutoModeratorService: SlackBotMessageService {
 
 
     func containsTriggerPhrase(_ messageText: String) -> TriggerPhrase? {
-        for trigger in TriggerPhrase.allCases {
-            if messageText.contains(trigger.rawValue) {
-                return trigger
-            }
+        for trigger in TriggerPhrase.allCases where messageText.contains(trigger.rawValue) {
+            return trigger
         }
 
         return nil

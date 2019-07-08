@@ -27,10 +27,10 @@ extension AutoModeratorService {
 
     public struct TriggerResponses {
         static let all: [TriggerPhrase: MessageResponse] = [
-            .youGuys: MessageResponse.inclusivity,
-            .thanksGuys: MessageResponse.inclusivity,
-            .hiGuys: MessageResponse.inclusivity,
-            .heyGuys: MessageResponse.inclusivity
+            .youGuys: .inclusivity,
+            .thanksGuys: .inclusivity,
+            .hiGuys: .inclusivity,
+            .heyGuys: .inclusivity
         ]
     }
 }
