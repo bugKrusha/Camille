@@ -29,10 +29,8 @@ public final class AutoModeratorService: SlackBotMessageService {
 
 
     func containsTriggerPhrase(_ messageText: String) -> TriggerPhrase? {
-        for trigger in TriggerPhrase.allCases where messageText.contains(trigger.rawValue) {
-            return trigger
-        }
-
-        return nil
+        return TriggerPhrase
+            .allCases
+            .first(where: { messageText.contains($0.rawValue) })
     }
 }
