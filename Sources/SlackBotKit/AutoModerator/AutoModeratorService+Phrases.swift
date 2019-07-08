@@ -1,5 +1,7 @@
 
 extension AutoModeratorService {
+    typealias Responses = [String]
+
     enum TriggerPhrase: String, CaseIterable {
         case youGuys = "you guys"
         case thanksGuys = "thanks guys"
@@ -11,26 +13,17 @@ extension AutoModeratorService {
         case noResponseForTriggerFound
     }
 
-    enum MessageResponse {
-        case inclusivity
-
-        var responses: [String] {
-            switch self {
-            case .inclusivity:
-                return [
-                    "Maybe next time, consider using “y’all” or “folks” instead. It’s more inclusive "
-                        + "than “guys”. :slightly_smiling_face:"
-                ]
-            }
-        }
+    struct MessageResponse {
+        static let inclusivity: Responses = [
+            "Maybe next time, consider using “y’all” or “folks” instead. It’s more inclusive "
+                + "than “guys”. :slightly_smiling_face:"
+        ]
     }
 
-    public struct TriggerResponses {
-        static let all: [TriggerPhrase: MessageResponse] = [
-            .youGuys: .inclusivity,
-            .thanksGuys: .inclusivity,
-            .hiGuys: .inclusivity,
-            .heyGuys: .inclusivity
-        ]
+    func getResponses(for trigger: TriggerPhrase) -> Responses {
+        switch trigger {
+        case .heyGuys, .hiGuys, .thanksGuys, .youGuys:
+            return MessageResponse.inclusivity
+        }
     }
 }
