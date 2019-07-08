@@ -17,7 +17,7 @@ public final class AutoModeratorService: SlackBotMessageService {
     func sendThreadedResponse(from bot: SlackBot, to message: MessageDecorator, with trigger: TriggerPhrase) throws {
         let response = try message.respond(.threaded)
 
-        guard let comment = getResponses(for: trigger).randomElement() else {
+        guard let comment = getResponses(for: trigger).random else {
             throw AutoModeratorError.noResponseForTriggerFound
         }
 
