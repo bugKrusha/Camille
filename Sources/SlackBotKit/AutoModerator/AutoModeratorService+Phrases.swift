@@ -2,11 +2,13 @@
 extension AutoModeratorService {
     typealias Responses = [String]
 
-    enum TriggerPhrase: String, CaseIterable {
+    enum TriggerPhrase: String {
         case youGuys = "you guys"
         case thanksGuys = "thanks guys"
         case hiGuys = "hi guys"
         case heyGuys = "hey guys"
+
+        static let all: [TriggerPhrase] = [.youGuys, .thanksGuys, .hiGuys, .heyGuys]
     }
     
     enum AutoModeratorError: Error {
