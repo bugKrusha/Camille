@@ -23,7 +23,7 @@ extension CamillinkService {
 
         public static func `default`() -> Config {
             return Config(
-                recencyLimitInDays: nil,
+                recencyLimitInDays: 7,
                 silentCrossLink: true,
                 silentSameChannel: false
             )
