@@ -11,11 +11,11 @@ public enum AutoModerator {
         }
 
         public static func `default`() -> Config {
-            return .init(triggerPhrases: [ // could these be simplified to " guys " ?
-                " you guys ",
-                " thanks guys ",
-                " hi guys ",
-                " hey guys ",
+            return .init(triggerPhrases: [ // could these be simplified to "guys" ?
+                "you guys",
+                "thanks guys",
+                "hi guys",
+                "hey guys",
             ])
         }
     }
