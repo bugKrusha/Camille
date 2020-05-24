@@ -1,30 +1,32 @@
-import Chameleon
+import ChameleonKit
+import Foundation
 
-public final class CamillinkService: SlackBotMessageService {
-    // MARK: - Properties
-    let storage: Storage
-    let config: Config
-    public let allowedSubTypes: [Message.Subtype] = [.me_message, .thread_broadcast]
+extension SlackBot {
+    public enum Camillink {
+        enum Keys {
+            static let namespace = "Camillink"
+            static let count = "count"
+            static let user = "user"
+        }
 
-    enum Keys {
-        static let namespace = "Camillink"
-        static let count = "count"
-        static let user = "user"
+        struct Record: LosslessStringCodable {
+            let date = Date()
+            let channelID: Identifier<Channel>
+            let permalink: URL
+        }
     }
+}
 
-    // MARK: - Lifecycle
-    public init(config: Config = Config.default(), storage: Storage) {
-        self.config = config
-        self.storage = storage
+extension SlackBot {
+    public func enableCamillink(config: Camillink.Config, storage: Storage) -> SlackBot {
+        listen(for: .message) { bot, message in
+            guard message.user != bot.me.id else { return }
+            guard !(message.subtype == .thread_broadcast && message.hidden) else { return }
+            guard message.channel_type != .im else { return }
+
+            try Camillink.tryTrackLink(config, storage, bot, message)
+        }
+
+        return self
     }
-
-    // MARK: - Public Functions
-    public func configure(slackBot: SlackBot) {
-        configureMessageService(slackBot: slackBot)
-    }
-
-    public func onMessage(slackBot: SlackBot, message: MessageDecorator, previous: MessageDecorator?) throws {
-        try trackLink(bot: slackBot, message: message)
-    }
-
 }
