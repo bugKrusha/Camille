@@ -1,33 +1,26 @@
-import Chameleon
+import ChameleonKit
+import Foundation
+import LegibleError
 import SlackBotKit
+import VaporProviders
 
-let store = Environment()
-let storage = RedisStorage(url: try store.get(forKey: "STORAGE_URL"))
+let env = Environment()
+let storageUrl = URL(string: try env.get(forKey: "STORAGE_URL"))!
+let storage = RedisStorage(url: storageUrl)
 
-let authenticator = OAuthAuthenticator(
-    network: NetworkProvider(),
-    storage: storage,
-    clientId: try store.get(forKey: "CLIENT_ID"),
-    clientSecret: try store.get(forKey: "CLIENT_SECRET"),
-    scopes: [.channels_write, .chat_write_bot, .users_read],
-    redirectUri: try? store.get(forKey: "REDIRECT_URI")
-)
+let bot = try SlackBot
+    .vaporBased(
+        verificationToken: try env.get(forKey: "VERIFICATION_TOKEN"),
+        accessToken: try env.get(forKey: "ACCESS_TOKEN")
+    )
+    .enableHello()
+    .enableKarma(config: .default(), storage: storage)
+    .enableCamillink(config: .default(), storage: storage)
+    .enableAutoModerator(config: .default())
 
-let bot = SlackBot(
-    authenticator: authenticator,
-    services: [
-        KarmaService(storage: storage),
-        CamillinkService(storage: storage),
-        AutoModeratorService()
-    ]
-)
+//bot.listen(for: .error) { bot, error in
+//    let channel = Identifier<Channel>(rawValue: "#camille-ionaires")
+//    try bot.perform(.speak(in: channel, "\("Error: ", .bold) \(error.legibleLocalizedDescription)"))
+//}
 
-bot.on(message.self) { bot, data in
-    let msg = data.message.makeDecorator()
-
-    guard msg.text.patternMatches(against: ["hello"]) else { return }
-
-    try bot.send(["hey!"], to: msg.target())
-}
-
-bot.start()
+try bot.start()
