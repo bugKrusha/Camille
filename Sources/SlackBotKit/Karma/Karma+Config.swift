@@ -1,11 +1,12 @@
+import ChameleonKit
 
-extension KarmaService {
-    public typealias CommentsFormatter = (String, Int) -> String
+extension SlackBot.Karma {
+    public typealias CommentsFormatter = (Identifier<User>, Int) -> MarkdownString
 
     public struct Config {
-        let topUserLimit: Int
-        let positiveComments: [CommentsFormatter]
-        let negativeComments: [CommentsFormatter]
+        public var topUserLimit: Int
+        public var positiveComments: [CommentsFormatter]
+        public var negativeComments: [CommentsFormatter]
 
         public init(topUserLimit: Int, positiveComments: [CommentsFormatter], negativeComments: [CommentsFormatter]) {
             self.topUserLimit = topUserLimit
@@ -31,7 +32,7 @@ extension KarmaService {
     }
 }
 
-private extension KarmaService.Config {
+private extension SlackBot.Karma.Config {
     /// Non-localized pluralization.
     ///
     /// - Parameter score: a point score.
