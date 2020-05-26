@@ -22,6 +22,7 @@ extension SlackBot {
         listen(for: .message) { bot, message in
             guard message.user != bot.me.id else { return }
             guard !(message.subtype == .thread_broadcast && message.hidden) else { return }
+            guard message.subtype != .message_changed else { return }
             guard message.channel_type != .im else { return }
 
             try Camillink.tryTrackLink(config, storage, bot, message)
