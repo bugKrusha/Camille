@@ -20,7 +20,12 @@ let package = Package(
             .product(name: "VaporProviders", package: "Chameleon"),
             .product(name: "LegibleError", package: "LegibleError"),
         ]),
-        .target(name: "SlackBotKit", dependencies: [.product(name: "ChameleonKit", package: "Chameleon")]),
-        .testTarget(name: "SlackBotKitTests", dependencies: ["SlackBotKit"]),
+        .target(name: "SlackBotKit", dependencies: [
+            .product(name: "ChameleonKit", package: "Chameleon")
+        ]),
+        .testTarget(name: "SlackBotKitTests", dependencies: [
+            "SlackBotKit",
+            .product(name: "ChameleonTestKit", package: "Chameleon")
+        ]),
     ]
 )

@@ -1,6 +1,4 @@
 import XCTest
 @testable import SlackBotKit
 
-XCTMain([
-    testCase(SlackBotKitTests.allTests),
-])
+// Please test with `swift test --enable-test-discovery`
