@@ -15,7 +15,7 @@ let bot = try SlackBot
     )
     .enableHello()
     .enableKarma(config: .default(), storage: storage)
-    //.enableCamillink(config: .default(), storage: storage) // disabled temporarily
+    .enableCamillink(config: .default(), storage: storage)
     .enableAutoModerator(config: .default())
 
 //bot.listen(for: .error) { bot, error in
