@@ -15,7 +15,7 @@ class AutoModeratorTests: XCTestCase {
         ]
 
         for message in messages {
-            try test.send(.event(.message(message)), enqueue: .emptyMessage())
+            try test.send(.event(.message(message)), enqueue: [.emptyMessage()])
         }
 
         // This service triggers a response when the pattern is matched.
