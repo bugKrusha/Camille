@@ -1,5 +1,4 @@
 import ChameleonKit
-import Foundation
 
 extension SlackBot.Camillink {
     static func tryTrackLink(_ config: Config, _ storage: Storage, _ bot: SlackBot, _ message: Message) throws {
@@ -22,7 +21,7 @@ extension SlackBot.Camillink {
 
             case nil: // new link
                 let permalink = try bot.perform(.permalink(for: message))
-                let record = Record(channelID: permalink.channel, permalink: permalink.permalink)
+                let record = Record(date: config.dateFactory(), channelID: permalink.channel, permalink: permalink.permalink)
                 try storage.set(forKey: link.absoluteString, from: Keys.namespace, value: record)
             }
         }
@@ -30,8 +29,7 @@ extension SlackBot.Camillink {
 
     private static func isRecordExpired(_ config: Config, _ record: Record) -> Bool {
         guard let dayLimit = config.recencyLimitInDays else { return false }
-        // Dave please don't yell at me
-        guard let daysSince = Calendar.current.dateComponents([.day], from: record.date, to: Date()).day else { return true }
+        guard let daysSince = config.calendar.dateComponents([.day], from: record.date, to: config.dateFactory()).day else { return true }
         return dayLimit < daysSince
     }
 

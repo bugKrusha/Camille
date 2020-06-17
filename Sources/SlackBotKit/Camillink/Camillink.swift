@@ -10,7 +10,7 @@ extension SlackBot {
         }
 
         struct Record: LosslessStringCodable {
-            let date = Date()
+            let date: Date
             let channelID: Identifier<Channel>
             let permalink: URL
         }
