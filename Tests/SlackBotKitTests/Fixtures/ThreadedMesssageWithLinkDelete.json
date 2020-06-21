@@ -1,0 +1,37 @@
+{
+  "channel_type" : "channel",
+  "ts" : "1592771921.003800",
+  "previous_message" : {
+    "user" : "U0000000001",
+    "ts" : "1592771909.003600",
+    "type" : "message",
+    "team" : "T00000000",
+    "client_msg_id" : "fe12cf78-082e-4a2d-beb2-24eadeb0c662",
+    "text" : "<https:\/\/twitter.com\/IanKay>",
+    "thread_ts" : "1592771894.003200",
+    "blocks" : [
+      {
+        "elements" : [
+          {
+            "type" : "rich_text_section",
+            "elements" : [
+              {
+                "url" : "https:\/\/twitter.com\/IanKay",
+                "type" : "link"
+              }
+            ]
+          }
+        ],
+        "type" : "rich_text",
+        "block_id" : "6U5Fh"
+      }
+    ],
+    "parent_user_id" : "U04UAVAEB"
+  },
+  "channel" : "C0000000000",
+  "hidden" : true,
+  "event_ts" : "1592771921.003800",
+  "deleted_ts" : "1592771909.003600",
+  "subtype" : "message_deleted",
+  "type" : "message"
+}

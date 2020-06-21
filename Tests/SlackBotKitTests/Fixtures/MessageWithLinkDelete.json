@@ -1,0 +1,48 @@
+{
+  "subtype" : "message_deleted",
+  "channel" : "C0000000000",
+  "type" : "message",
+  "channel_type" : "channel",
+  "previous_message" : {
+    "attachments" : [
+      {
+        "from_url" : "https:\/\/twitter.com\/IanKay",
+        "original_url" : "https:\/\/twitter.com\/IanKay",
+        "text" : "The latest Tweets from Ian Keen (@IanKay). Aussie iOS dev living, working and playing in beautiful Whistler B.C. Tweets are my own. Whistler, British Columbia",
+        "id" : 1,
+        "title_link" : "https:\/\/twitter.com\/IanKay",
+        "service_name" : "twitter.com",
+        "fallback" : "Ian Keen (@IanKay) | Twitter",
+        "title" : "Ian Keen (@IanKay) | Twitter",
+        "service_icon" : "https:\/\/abs.twimg.com\/icons\/apple-touch-icon-192x192.png"
+      }
+    ],
+    "client_msg_id" : "1541c634-28d7-4f8e-8080-bab13b206058",
+    "text" : "<https:\/\/twitter.com\/IanKay>",
+    "user" : "U0000000001",
+    "type" : "message",
+    "ts" : "1592771897.003400",
+    "team" : "T00000000",
+    "blocks" : [
+      {
+        "block_id" : "EYxRJ",
+        "elements" : [
+          {
+            "type" : "rich_text_section",
+            "elements" : [
+              {
+                "type" : "link",
+                "url" : "https:\/\/twitter.com\/IanKay"
+              }
+            ]
+          }
+        ],
+        "type" : "rich_text"
+      }
+    ]
+  },
+  "hidden" : true,
+  "event_ts" : "1592772508.005400",
+  "deleted_ts" : "1592771897.003400",
+  "ts" : "1592772508.005400"
+}

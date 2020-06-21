@@ -1,0 +1,29 @@
+{
+  "team" : "T00000000",
+  "channel" : "C0000000000",
+  "text" : "<https:\/\/twitter.com\/IanKay>",
+  "user" : "U0000000001",
+  "blocks" : [
+    {
+      "elements" : [
+        {
+          "type" : "rich_text_section",
+          "elements" : [
+            {
+              "url" : "https:\/\/twitter.com\/IanKay",
+              "type" : "link"
+            }
+          ]
+        }
+      ],
+      "type" : "rich_text",
+      "block_id" : "6U5Fh"
+    }
+  ],
+  "type" : "message",
+  "ts" : "1592771909.003600",
+  "thread_ts" : "1592771894.003200",
+  "event_ts" : "1592771909.003600",
+  "parent_user_id" : "U04UAVAEB",
+  "channel_type" : "channel"
+}
