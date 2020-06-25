@@ -6,10 +6,10 @@ struct KarmaModifier {
 
 extension ElementMatcher {
     static var karma: ElementMatcher {
-        let plusOne = ElementMatcher.contains("++").map(KarmaModifier { $0 + 1 })
+        let plusOne = ElementMatcher(^"++").map(KarmaModifier { $0 + 1 })
         let plusN = ElementMatcher("+=" && optional(.whitespace) *> .integer).map { n in KarmaModifier { $0 + n } }
 
-        let minusOne = ElementMatcher.contains("--").map(KarmaModifier { $0 - 1 })
+        let minusOne = ElementMatcher(^"--").map(KarmaModifier { $0 - 1 })
         let minusN = ElementMatcher("-=" && optional(.whitespace) *> .integer).map { n in KarmaModifier { $0 - n } }
 
         return plusOne || plusN || minusOne || minusN
