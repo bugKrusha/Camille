@@ -58,7 +58,7 @@ class KarmaTests: XCTestCase {
             enqueue: [.emptyMessage()]
         )
 
-        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace).sorted(), ["1"])
+        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), ["1"])
         try XCTAssertEqual(storage.get(forKey: "1", from: SlackBot.Karma.Keys.namespace), 2)
         XCTAssertClear(test)
     }
@@ -71,8 +71,23 @@ class KarmaTests: XCTestCase {
         try test.send(.event(.karmaMessageWithLink1()), enqueue: [.emptyMessage()])
         try test.send(.event(.karmaUnfurlLink1()))
 
-        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace).sorted(), ["U0000000002"])
+        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), ["U0000000002"])
         try XCTAssertEqual(storage.get(forKey: "U0000000002", from: SlackBot.Karma.Keys.namespace), 1)
+        XCTAssertClear(test)
+    }
+
+    func testKarma_EdgeCase_FalsePositives() throws {
+        let test = try SlackBot.test()
+        let storage = MemoryStorage()
+        _ = test.bot.enableKarma(config: .default(), storage: storage)
+
+        try test.send(
+            .event(.message([
+                .text("Hey "), .user("1"), .text(" have you used C++?")
+            ]))
+        )
+
+        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), [])
         XCTAssertClear(test)
     }
 }
