@@ -16,15 +16,18 @@ class KarmaTests: XCTestCase {
         XCTAssertClear(test)
     }
 
-    func testKarma_NormalMatches() throws {
+    func testKarma_NormalMatches_WhitespaceVariants() throws {
         let test = try SlackBot.test()
         let storage = MemoryStorage()
         _ = test.bot.enableKarma(config: .default(), storage: storage)
 
         try test.send(.event(.message([.user("1"), .text(" ++")])), enqueue: [.emptyMessage()])
+        try test.send(.event(.message([.user("1"), .text("++")])), enqueue: [.emptyMessage()])
+        try test.send(.event(.message([.user("1"), .text("++ ")])), enqueue: [.emptyMessage()])
+        try test.send(.event(.message([.user("1"), .text(" ++ ")])), enqueue: [.emptyMessage()])
 
         try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), ["1"])
-        try XCTAssertEqual(storage.get(forKey: "1", from: SlackBot.Karma.Keys.namespace), 1)
+        try XCTAssertEqual(storage.get(forKey: "1", from: SlackBot.Karma.Keys.namespace), 4)
         XCTAssertClear(test)
     }
 
