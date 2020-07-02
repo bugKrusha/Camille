@@ -30,9 +30,10 @@ extension SlackBot.Karma {
             }
 
             // filter out unwanted results
+            tally[message.user] = 0 // remove any 'self-karma'
             let validUpdates = tally.filter({ $0.value != 0 }).keys
 
-            guard !updates.isEmpty else { return }
+            guard !validUpdates.isEmpty else { return }
 
             // perform updates and build response
             var responses: [MarkdownString] = []
