@@ -71,4 +71,17 @@ class CamillinkTests: XCTestCase {
         try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), [])
         XCTAssertClear(test)
     }
+
+    func testLinkTracking_EdgeCases_DuplicateLink() throws {
+        let test = try SlackBot.test()
+        let storage = MemoryStorage()
+        _ = test.bot.enableCamillink(config: .default(), storage: storage)
+
+        // only 1 permalink should be requested
+        try test.enqueue([.permalink(channelId: "C0000000000", url: URL("https://www.slack.com/permalink/channel1/link1"))])
+
+        try test.send(.event(.messageWithDuplicateLink()))
+        try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), ["https://twitter.com/IanKay"])
+        XCTAssertClear(test)
+    }
 }
