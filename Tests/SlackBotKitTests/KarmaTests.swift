@@ -104,4 +104,16 @@ class KarmaTests: XCTestCase {
         try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), [])
         XCTAssertClear(test)
     }
+
+    func testKarma_EdgeCase_Punctuation() throws {
+        let test = try SlackBot.test()
+        let storage = MemoryStorage()
+        _ = test.bot.enableKarma(config: .default(), storage: storage)
+
+        try test.send(.event(.message([.text("(btw, "), .user("1"), .text("++)")])), enqueue: [.emptyMessage()])
+
+        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), ["1"])
+        try XCTAssertEqual(storage.get(forKey: "1", from: SlackBot.Karma.Keys.namespace), 1)
+        XCTAssertClear(test)
+    }
 }
