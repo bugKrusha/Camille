@@ -8,4 +8,5 @@ extension FixtureSource {
     static func deleteMessageWithLink1() throws -> FixtureSource<Any> { try .init(jsonFile: "MessageWithLinkDelete") }
 
     static func messageWithPreformattedLink() throws -> FixtureSource<Any> { try .init(jsonFile: "MessageWithPreformattedLink") }
+    static func messageWithDuplicateLink() throws -> FixtureSource<Any> { try .init(jsonFile: "MessageWithDuplicateLink") }
 }
