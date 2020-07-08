@@ -6,4 +6,6 @@ extension FixtureSource {
     static func threadedMessageWithLink1() throws -> FixtureSource<Any> { try.init(jsonFile: "ThreadedMesssageWithLink") }
     static func deleteThreadedMessageWithLink1() throws -> FixtureSource<Any> { try .init(jsonFile: "ThreadedMesssageWithLinkDelete") }
     static func deleteMessageWithLink1() throws -> FixtureSource<Any> { try .init(jsonFile: "MessageWithLinkDelete") }
+
+    static func messageWithPreformattedLink() throws -> FixtureSource<Any> { try .init(jsonFile: "MessageWithPreformattedLink") }
 }
