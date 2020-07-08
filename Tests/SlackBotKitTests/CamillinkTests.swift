@@ -61,4 +61,14 @@ class CamillinkTests: XCTestCase {
         try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), [])
         XCTAssertClear(test)
     }
+
+    func testLinkTracking_EdgeCases_LinksInCodeBlocks() throws {
+        let test = try SlackBot.test()
+        let storage = MemoryStorage()
+        _ = test.bot.enableCamillink(config: .default(), storage: storage)
+
+        try test.send(.event(.messageWithPreformattedLink()))
+        try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), [])
+        XCTAssertClear(test)
+    }
 }
