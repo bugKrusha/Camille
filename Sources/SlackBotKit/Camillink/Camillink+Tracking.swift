@@ -3,7 +3,7 @@ import ChameleonKit
 extension SlackBot.Camillink {
     static func tryTrackLink(_ config: Config, _ storage: Storage, _ bot: SlackBot, _ message: Message) throws {
         // Check actual link, make sure it's not mail.app etc
-        let links = message.links().filter({ $0.url.absoluteString.hasPrefix("http") }).map({ $0.url })
+        let links = message.links().filter({ $0.url.absoluteString.hasPrefix("http") }).map({ $0.url }).removeDuplicates()
         guard !links.isEmpty else { return }
 
         // Might be good to clean attribution links to prevent duplicates, etc...
