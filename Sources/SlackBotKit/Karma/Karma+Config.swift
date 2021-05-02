@@ -38,10 +38,10 @@ extension SlackBot.Karma {
 private extension SlackBot.Karma.Config {
     /// Non-localized pluralization.
     ///
-    /// - Parameter score: a point score.
-    /// - Returns: `"point"` if score is 1; otherwise, `"points"`.
+    /// - Parameter score: a camillecoin score.
+    /// - Returns: `"camillecoin"` if score is 1; otherwise, `"camillecoins"`.
     /// - Note: Should be replaced by proper localized pluralization
     static func pluralizedScoreString(from score: Int) -> String {
-        return score == 1 ? "point" : "points"
+        return score == 1 ? "camillecoin" : "camillecoins"
     }
 }
