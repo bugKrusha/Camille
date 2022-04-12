@@ -19,7 +19,7 @@ extension SlackBot.Camillink {
                 if isRecordExpired(config, record) {
                     try storage.remove(forKey: link.absoluteString, from: Keys.namespace)
 
-                } else if !shouldSilence(config, message, record) {
+                } else if !shouldSilence(link, config, message, record) {
                     let response: MarkdownString = "\(.wave) That \("link", link) is also being discussed in \("this message", record.permalink) in \(record.channelID)"
                     try bot.perform(.respond(to: message, .threaded, with: response))
                 }
@@ -38,21 +38,29 @@ extension SlackBot.Camillink {
         return dayLimit < daysSince
     }
 
-    private static func shouldSilence(_ config: Config, _ message: Message, _ record: Record) -> Bool {
-        return shouldSilenceForWhitelisting(record)
+    private static func shouldSilence(_ link: URL, _ config: Config, _ message: Message, _ record: Record) -> Bool {
+        return shouldSilenceForAllowListedDomain(link)
             || shouldSilenceForCrossLink(config, message, record)
             || shouldSilenceForSameChannel(config, message, record)
     }
+
     private static func shouldSilenceForCrossLink(_ config: Config, _ message: Message, _ record: Record) -> Bool {
         guard config.silentCrossLink else { return false }
         return message.channels().contains(record.channelID)
     }
-    private static func shouldSilenceForWhitelisting(_ record: Record) -> Bool {
-        // Eventually implement whitelisting here
-        // This is WIP until I get time to implement attachments
-        // in Chameleon
-        return false
+
+    private static func shouldSilenceForAllowListedDomain(_ link: URL) -> Bool {
+        let allowListedHosts = [
+            "apple.com",
+            "developer.apple.com",
+            "iosfolks.com"
+        ]
+
+        guard let components = URLComponents(url: link, resolvingAgainstBaseURL: false) else { return false }
+
+        return allowListedHosts.contains(where: { $0 == components.host })
     }
+
     private static func shouldSilenceForSameChannel(_ config: Config, _ message: Message, _ record: Record) -> Bool {
         guard config.silentSameChannel else { return false }
         return message.channel == record.channelID
