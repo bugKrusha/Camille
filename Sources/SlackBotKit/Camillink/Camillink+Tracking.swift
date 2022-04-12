@@ -8,7 +8,7 @@ extension SlackBot.Camillink {
         let links = message.links()
             .filter({ $0.url.absoluteString.hasPrefix("http") })
             .map({ $0.url })
-            .compactMap({ self.removeGarbageQueryParameter(url: $0) })
+            .compactMap({ self.removeGarbageQueryParameters(url: $0) })
             .removeDuplicates()
 
         guard !links.isEmpty else { return }
@@ -66,8 +66,8 @@ extension SlackBot.Camillink {
         return message.channel == record.channelID
     }
 
-    private static func removeGarbageQueryParameter(url: URL) -> URL? {
-        let denyListedQueryItems = [
+    private static func removeGarbageQueryParameters(url: URL) -> URL? {
+        let denyListedQueryParameters = [
             "utm",
             "utm_source",
             "utm_media",
@@ -82,7 +82,7 @@ extension SlackBot.Camillink {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
 
         urlComponents.queryItems?.removeAll(where: { queryItem in
-            denyListedQueryItems.contains(where: { $0 == queryItem.name })
+            denyListedQueryParameters.contains(where: { $0 == queryItem.name })
         })
 
         if let queryItems = urlComponents.queryItems, queryItems.isEmpty {
