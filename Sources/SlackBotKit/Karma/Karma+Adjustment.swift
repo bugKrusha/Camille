@@ -6,17 +6,20 @@ struct KarmaModifier {
 
 extension ElementMatcher {
     static var karma: ElementMatcher {
+        // We don't want users to spam the karma system so increments and decrements are capped to 10
+        let maxKarmaChangeCap = 10
+
         let plusStart = Parser.literal("++").map { _ in 1 }
         let plusExtra = Parser<Int>.char("+").many.optional.map { $0?.count ?? 0 }
         let plusses = (plusStart && plusExtra).map { $0 + $1 }
-        let plusPlus = ElementMatcher(^plusses).map { n in KarmaModifier { $0 + n } }
-        let plusEqualN = ElementMatcher("+=" && optional(.whitespace) *> .integer).map { n in KarmaModifier { $0 + n } }
+        let plusPlus = ElementMatcher(^plusses).map { n in KarmaModifier { $0 + min(n, maxKarmaChangeCap) } }
+        let plusEqualN = ElementMatcher("+=" && optional(.whitespace) *> .integer).map { n in KarmaModifier { $0 + min(n, maxKarmaChangeCap) } }
 
         let minusStart = Parser.literal("--").map { _ in 1 }
         let minusExtra = Parser<Int>.char("-").many.optional.map { $0?.count ?? 0 }
         let minuses = (minusStart && minusExtra).map { $0 + $1 }
-        let minusMinus = ElementMatcher(^minuses).map { n in KarmaModifier { $0 - n } }
-        let minusEqualN = ElementMatcher("-=" && optional(.whitespace) *> .integer).map { n in KarmaModifier { $0 - n } }
+        let minusMinus = ElementMatcher(^minuses).map { n in KarmaModifier { $0 - min(n, maxKarmaChangeCap) } }
+        let minusEqualN = ElementMatcher("-=" && optional(.whitespace) *> .integer).map { n in KarmaModifier { $0 - min(n, maxKarmaChangeCap) } }
 
         return plusPlus || plusEqualN || minusMinus || minusEqualN
     }

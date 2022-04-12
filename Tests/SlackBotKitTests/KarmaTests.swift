@@ -128,4 +128,20 @@ class KarmaTests: XCTestCase {
         try XCTAssertEqual(storage.get(forKey: "1", from: SlackBot.Karma.Keys.namespace), 1)
         XCTAssertClear(test)
     }
+
+    func testKarma_PointsCapped() throws {
+        let test = try SlackBot.test()
+        let storage = MemoryStorage()
+        _ = test.bot.enableKarma(config: .default(), storage: storage)
+
+        // 20 pluses and minuses should be capped at 10
+        try test.send(.event(.message([.user("1"), .text(" ++++++++++++++++++++++")])), enqueue: [.emptyMessage()])
+        try test.send(.event(.message([.user("2"), .text(" ----------------------")])), enqueue: [.emptyMessage()])
+
+        try XCTAssertEqual(storage.keys(in: SlackBot.Karma.Keys.namespace), ["1", "2"])
+        try XCTAssertEqual(storage.get(forKey: "1", from: SlackBot.Karma.Keys.namespace), 10)
+        try XCTAssertEqual(storage.get(forKey: "2", from: SlackBot.Karma.Keys.namespace), -10)
+        XCTAssertClear(test)
+    }
+
 }
