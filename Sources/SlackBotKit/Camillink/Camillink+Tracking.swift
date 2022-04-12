@@ -53,6 +53,7 @@ extension SlackBot.Camillink {
         let allowListedHosts = [
             "apple.com",
             "developer.apple.com",
+            "iosdevelopers.slack.com",
             "iosfolks.com"
         ]
 
