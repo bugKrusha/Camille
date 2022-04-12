@@ -1,12 +1,17 @@
 import ChameleonKit
+import Foundation
 
 extension SlackBot.Camillink {
-    static func tryTrackLink(_ config: Config, _ storage: Storage, _ bot: SlackBot, _ message: Message) throws {
-        // Check actual link, make sure it's not mail.app etc
-        let links = message.links().filter({ $0.url.absoluteString.hasPrefix("http") }).map({ $0.url }).removeDuplicates()
-        guard !links.isEmpty else { return }
 
-        // Might be good to clean attribution links to prevent duplicates, etc...
+    static func tryTrackLink(_ config: Config, _ storage: Storage, _ bot: SlackBot, _ message: Message) throws {
+        // Check for a web link, make sure it's not Mail.app, etc
+        let links = message.links()
+            .filter({ $0.url.absoluteString.hasPrefix("http") })
+            .map({ $0.url })
+            .compactMap({ self.removeGarbageQueryParameter(url: $0) })
+            .removeDuplicates()
+
+        guard !links.isEmpty else { return }
 
         for link in links {
             switch try? storage.get(Record.self, forKey: link.absoluteString, from: Keys.namespace) {
@@ -52,4 +57,32 @@ extension SlackBot.Camillink {
         guard config.silentSameChannel else { return false }
         return message.channel == record.channelID
     }
+
+    private static func removeGarbageQueryParameter(url: URL) -> URL? {
+        let denyListedQueryItems = [
+            "utm",
+            "utm_source",
+            "utm_media",
+            "utm_campaign",
+            "utm_medium",
+            "utm_term",
+            "utm_content",
+            "t",
+            "s",
+        ]
+
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
+
+        urlComponents.queryItems?.removeAll(where: { queryItem in
+            denyListedQueryItems.contains(where: { $0 == queryItem.name })
+        })
+
+        if let queryItems = urlComponents.queryItems, queryItems.isEmpty {
+            // An empty queryItems array will retain a trailing ? but nilling it out removes that
+            urlComponents.queryItems = nil
+        }
+
+        return urlComponents.url
+    }
+
 }

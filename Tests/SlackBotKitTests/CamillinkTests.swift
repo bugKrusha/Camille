@@ -4,6 +4,7 @@ import ChameleonTestKit
 import XCTest
 
 class CamillinkTests: XCTestCase {
+
     func testLinkTracking() throws {
         let test = try SlackBot.test()
         let storage = MemoryStorage()
@@ -51,6 +52,13 @@ class CamillinkTests: XCTestCase {
         date.addTimeInterval(1)
         try test.enqueue([.emptyMessage()])
         try test.send(.event(.message([.link(url: URL("https://twitter.com/IanKay"))])))
+        try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), ["https://twitter.com/IanKay"])
+        XCTAssertClear(test)
+
+        // same link, ensuring a denylisted query parameter is stripped, 1 second later
+        date.addTimeInterval(1)
+        try test.enqueue([.emptyMessage()])
+        try test.send(.event(.message([.link(url: URL("https://twitter.com/IanKay?s=20"))])))
         try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), ["https://twitter.com/IanKay"])
         XCTAssertClear(test)
 
