@@ -55,6 +55,12 @@ class CamillinkTests: XCTestCase {
         try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), ["https://twitter.com/IanKay"])
         XCTAssertClear(test)
 
+        // same link, ensuring that an allowlisted domain does not trigger Camille, 1 second later
+        date.addTimeInterval(1)
+        try test.send(.event(.message([.link(url: URL("https://apple.com/"))])))
+        try XCTAssertEqual(storage.keys(in: SlackBot.Camillink.Keys.namespace), ["https://twitter.com/IanKay"])
+        XCTAssertClear(test)
+
         // same link, ensuring a denylisted query parameter is stripped, 1 second later
         date.addTimeInterval(1)
         try test.enqueue([.emptyMessage()])

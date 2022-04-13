@@ -18,13 +18,14 @@ extension SlackBot.Camillink {
             case let record?:
                 if isRecordExpired(config, record) {
                     try storage.remove(forKey: link.absoluteString, from: Keys.namespace)
-
                 } else if !shouldSilence(link, config, message, record) {
                     let response: MarkdownString = "\(.wave) That \("link", link) is also being discussed in \("this message", record.permalink) in \(record.channelID)"
                     try bot.perform(.respond(to: message, .threaded, with: response))
                 }
 
             case nil: // new link
+                guard !shouldSilenceForAllowListedDomain(link) else { return }
+
                 let permalink = try bot.perform(.permalink(for: message))
                 let record = Record(date: config.dateFactory(), channelID: permalink.channel, permalink: permalink.permalink)
                 try storage.set(forKey: link.absoluteString, from: Keys.namespace, value: record)
@@ -54,7 +55,8 @@ extension SlackBot.Camillink {
             "apple.com",
             "developer.apple.com",
             "iosdevelopers.slack.com",
-            "iosfolks.com"
+            "iosfolks.com",
+            "mlb.tv"
         ]
 
         guard let components = URLComponents(url: link, resolvingAgainstBaseURL: false) else { return false }
