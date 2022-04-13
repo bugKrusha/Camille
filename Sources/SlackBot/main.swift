@@ -6,7 +6,7 @@ import VaporProviders
 
 let env = Environment()
 let storageUrl = URL(string: try env.get(forKey: "STORAGE_URL"))!
-let storage = RedisStorage(url: storageUrl)
+let storage = try! RedisStorage(url: storageUrl)
 
 let bot = try SlackBot
     .vaporBased(
