@@ -1,3 +1,4 @@
+import Foundation
 import ChameleonKit
 
 /// A service that observes every message in a public channel, determines whether it requires an automatic moderator
@@ -11,7 +12,7 @@ public enum AutoModerator {
         }
 
         public static func `default`() -> Config {
-            return .init(triggerPhrases: [ // could these be simplified to "guys" ?
+            return .init(triggerPhrases: [
                 "you guys",
                 "thanks guys",
                 "hi guys",
@@ -20,6 +21,7 @@ public enum AutoModerator {
         }
     }
 }
+
 extension SlackBot {
     public func enableAutoModerator(config: AutoModerator.Config) -> SlackBot {
         listen(for: .message) { bot, message in
@@ -27,10 +29,14 @@ extension SlackBot {
             guard !(message.subtype == .thread_broadcast && message.hidden) else { return }
 
             try message.matching(.anyOf(config.triggerPhrases)) { _ in
-                let response: MarkdownString = "Maybe next time, consider using “y’all” or “folks” instead. It’s more inclusive than “guys”. \(.smile)"
+                let camilleLink = URL(string: "https://iosfolks.com/camille")!
+                let heyGuysLink = URL(string: "https://iosfolks.com/hey-guys")!
+                let communityGuideLink = URL(string: "https://iosfolks.com/guide")!
+                let response: MarkdownString = "To promote inclusivity we ask people to use an alternative to guys such as y’all or folks. We all make mistakes so don't overthink it, you can learn more about \("this message", heyGuysLink) or \("Camille", camilleLink) in our \("Community Guide", communityGuideLink)."
                 try bot.perform(.respond(to: message, .threaded, with: response))
             }
         }
+
         return self
     }
 }
