@@ -29,10 +29,8 @@ extension SlackBot {
             guard !(message.subtype == .thread_broadcast && message.hidden) else { return }
 
             try message.matching(.anyOf(config.triggerPhrases)) { _ in
-                let camilleLink = URL(string: "https://iosfolks.com/camille")!
                 let heyGuysLink = URL(string: "https://iosfolks.com/hey-guys")!
-                let communityGuideLink = URL(string: "https://iosfolks.com/guide")!
-                let response: MarkdownString = "To promote inclusivity we ask people to use an alternative to guys such as y’all or folks. We all make mistakes so don't overthink it, you can learn more about \("this message", heyGuysLink) or \("Camille", camilleLink) in our \("Community Guide", communityGuideLink)."
+                let response: MarkdownString = "To promote inclusivity we ask people to use an alternative to guys such as y’all or folks. We all make mistakes so don't overthink it, you can learn more about \("this message", heyGuysLink) or Camille in our Community Guide."
                 try bot.perform(.respond(to: message, .threaded, with: response))
             }
         }
