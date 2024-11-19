@@ -56,7 +56,8 @@ extension SlackBot.Camillink {
             "developer.apple.com",
             "iosdevelopers.slack.com",
             "iosfolks.com",
-            "mlb.tv"
+            "mlb.tv",
+            "youtube.com/watch?v=dQw4w9WgXcQ"
         ]
 
         guard let components = URLComponents(url: link, resolvingAgainstBaseURL: false) else { return false }
